@@ -1,5 +1,6 @@
 package stepdefinitions;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -8,6 +9,7 @@ import org.openqa.selenium.Keys;
 import pages.AmazonPage;
 import utilities.ConfigReader;
 import utilities.Driver;
+import utilities.ReusableMethods;
 
 public class AmazonStepdefinitions {
     AmazonPage amazonPage=new AmazonPage();
@@ -93,6 +95,26 @@ public class AmazonStepdefinitions {
         Assert.assertTrue(actualIcerik.contains(expectedIcerik));
     }
 
+    @Then("amazonda {string} icin arama yapar")                                  //burada kodlarimiz dinamiklesir
+    public void amazondaIcinAramaYapar(String istedigiKelime) {
+
+        amazonPage.searchBox.sendKeys(istedigiKelime+ Keys.ENTER);
+    }
+
+    @And("sonuclarin {string} icerdigini test eder")                             // burada kodlarimiz dinamiklesir
+    public void sonuclarinIcerdiginiTestEder(String arananKelime) {
+
+        String actualIcerik=amazonPage.resultBoxElement.getText();
+        Assert.assertTrue(actualIcerik.contains(arananKelime));
+
+    }
+
+    @And("{int} saniye bekler")          //direkt sayi yazinca-yani sayiyi String yazmayinca- int olarak burada olusur
+                                         //sayilari otomatik parametre kabul ediyor
+    public void saniyeBekler(int istenenSaniye) {
+        ReusableMethods.bekle(istenenSaniye);
+    }
+
 
     /*
     runner clasini olusturmadigimiz icin
@@ -106,6 +128,33 @@ public class AmazonStepdefinitions {
     Given kullanici Amazon anasayfaya gider" ile ayni classtaki her scenario nun ortak adimi bir kere yazilmis olur
     her scenario tek basina calisir illa features sevisinde tum scenario larin calismasina gerek kalmaz
      */
+
+
+    @Given("kullanici {string} anasayfaya gider")
+    public void kullanici_anasayfaya_gider(String istenenUrl) {
+        Driver.getDriver().get(ConfigReader.getProperty(istenenUrl));
+
+    }
+    @Then("{string} sayfasina gittigini test eder")
+    public void sayfasina_gittigini_test_eder(String istenenUrl) {
+        String actualUrl=Driver.getDriver().getCurrentUrl();
+        String expectedUrl=ConfigReader.getProperty(istenenUrl)+ "/";
+        Assert.assertEquals(expectedUrl,actualUrl);
+
+    }
+    @When("{int}.urune gider")
+    public void urune_gider(Integer istenenIndex) {
+        amazonPage.istenenUrunElementi(istenenIndex).click();
+
+    }
+    @Then("urun isminin {string} icerdigini test eder")
+    public void urun_isminin_icerdigini_test_eder(String arananKelime) {
+        String actualUrunIsmi=amazonPage.firstProductNameElement.getText();
+        Assert.assertTrue(actualUrunIsmi.contains(arananKelime));
+
+    }
+
+
 
 
 }
