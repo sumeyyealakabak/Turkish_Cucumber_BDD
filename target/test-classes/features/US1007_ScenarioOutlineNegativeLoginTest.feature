@@ -1,3 +1,4 @@
+@wip
 Feature: US1007 Scenario Outline ile coklu negative login test
 
 

@@ -1,3 +1,4 @@
+@wip
 Feature: US1002 Kullanici Background kullanarak Amazonda arama yapar
 
   Background:
